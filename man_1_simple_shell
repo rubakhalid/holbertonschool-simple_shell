@@ -1,0 +1,37 @@
+.TH simple_shell 1 "April 2025" "Simple Shell Manual"
+.SH NAME
+simple_shell \- a simple UNIX command line interpreter
+
+.SH SYNOPSIS
+.B ./hsh
+
+.SH DESCRIPTION
+.B simple_shell
+is a basic shell written in C as part of the Holberton School curriculum.  
+It supports interactive and non-interactive modes, and allows users to run basic UNIX commands using full paths.
+
+This version supports only single-word commands with no arguments.  
+It does not handle pipes, redirections, or environment path search.
+
+.SH USAGE
+To start the shell, compile the source code and run:
+
+.B ./hsh
+
+Once inside the shell, type a full path to a command and press ENTER:
+
+.EX
+#cisfun$ /bin/ls
+
+To exit, use Ctrl+D (EOF).
+
+To run in non-interactive mode:
+
+.B echo "/bin/ls" | ./hsh
+
+.SH AUTHORS
+Batoul Alsaeed (GitHub: @Batoul-Alsaeed)  
+Ruba Alhuamid (GitHub: @rubakhalid)
+
+.SH SEE ALSO
+sh(1), execve(2), fork(2), getline(3), wait(2)
