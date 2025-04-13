@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * main - Entry point of the simple shell
+ * main - A simple shell that executes commands
  *
  * Return: Always 0 (Success)
  */
@@ -15,7 +15,9 @@ int main(void)
 
 	while (1)
 	{
-		write(STDOUT_FILENO, "#cisfun$ ", 9);
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "#cisfun$ ", 9);
+
 		read = getline(&line, &len, stdin);
 
 		if (read == -1)
@@ -32,17 +34,21 @@ int main(void)
 			argv[0] = line;
 			argv[1] = NULL;
 
-			if (execve(argv[0], argv, NULL) == -1)
-			{
+			if (execve(argv[0], argv, environ) == -1)
 				perror("./hsh");
-			}
+
 			exit(1);
 		}
-		else
+		else if (pid > 0)
 		{
 			wait(NULL);
 		}
+		else
+		{
+			perror("fork");
+		}
 	}
+
 	free(line);
 	return (0);
 }
