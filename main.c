@@ -1,52 +1,34 @@
 #include "main.h"
 
 /**
- * main - A simple shell that executes commands
- *
- * Return: Always 0 (Success)
+ * main - Entry point for simple shell
+ * Return: Always 0
  */
 int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	pid_t pid;
-	char *argv[2];
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			write(STDOUT_FILENO, "#cisfun$ ", 9);
+			print_prompt();
 
 		read = getline(&line, &len, stdin);
-
 		if (read == -1)
 		{
 			free(line);
-			exit(0); /* Handle Ctrl+D */
+			exit(0);
 		}
 
-		line[read - 1] = '\0'; /* Remove newline */
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0';
 
-		pid = fork();
-		if (pid == 0)
-		{
-			argv[0] = line;
-			argv[1] = NULL;
+		while (*line == ' ')
+			line++;
 
-			if (execve(argv[0], argv, environ) == -1)
-				perror("./hsh");
-
-			exit(1);
-		}
-		else if (pid > 0)
-		{
-			wait(NULL);
-		}
-		else
-		{
-			perror("fork");
-		}
+		execute_command(line);
 	}
 
 	free(line);
