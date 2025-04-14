@@ -296,6 +296,7 @@ size_t len = 0;
 ssize_t read;
 char **args;
 pid_t pid;
+int status = 0; /* NEW: holds child exit status */
 
 while (1)
 {
@@ -319,6 +320,7 @@ free(args);
 continue;
 }
 
+/* NEW: Built-in exit command */
 if (strcmp(args[0], "exit") == 0)
 {
 free(args);
@@ -333,6 +335,7 @@ fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 free(args);
 if (cmd_path)
 free(cmd_path);
+status = 127; /* exit code for command not found */
 continue;
 }
 
@@ -341,11 +344,13 @@ if (pid == 0)
 {
 execve(cmd_path, args, environ);
 perror("./hsh");
-exit(EXIT_FAILURE);
+/*exit(EXIT_FAILURE);*/
+exit(127); /* exit with 127 if execve fails */
 }
 else if (pid > 0)
 {
-wait(NULL);
+/*wait(NULL);*/
+wait(&status); /* Now we store child exit code here */
 }
 else
 {
@@ -357,6 +362,6 @@ free(args);
 }
 
 free(line);
-return (0);
+/*return (0);*/
+return (WEXITSTATUS(status)); /* Exit with last child status */
 }
-
