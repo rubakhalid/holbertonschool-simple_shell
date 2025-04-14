@@ -270,6 +270,22 @@ return (args);
 }
 
 /**
+ * is_only_whitespace - NEW: Check if string is only spaces, tabs, or newlines
+ * @s: input string
+ * Return: 1 if only whitespace, 0 otherwise
+ */
+int is_only_whitespace(const char *s)
+{
+	while (*s)
+	{
+		if (*s != ' ' && *s != '\t' && *s != '\n')
+			return (0);
+		s++;
+	}
+	return (1);
+}
+
+/**
  * main - Simple shell 0.3
  * Return: 0
  */
@@ -293,7 +309,7 @@ free(line);
 exit(0);
 }
 
-if (strspn(line, " \t\n") == strlen(line))
+if (is_only_whitespace(line))
 continue;
 
 args = parse_line(line);
