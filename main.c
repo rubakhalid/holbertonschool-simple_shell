@@ -293,7 +293,7 @@ free(line);
 exit(0);
 }
 
-if (line[0] == '\n')
+if (strspn(line, " \t\n") == strlen(line))
 continue;
 
 args = parse_line(line);
@@ -308,6 +308,7 @@ if (!cmd_path || access(cmd_path, X_OK) != 0)
 {
 fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 free(args);
+if (cmd_path)
 free(cmd_path);
 continue;
 }
