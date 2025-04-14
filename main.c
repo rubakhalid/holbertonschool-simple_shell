@@ -1,46 +1,49 @@
 #include "main.h"
-#include <string.h>
 
 /**
- * main - Entry point of the shell
+ * main - A simple shell that executes commands
  *
- * Return: Always 0
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
 	char *line = NULL;
-	int only_spaces;
-	int i;
+	size_t len = 0;
+	ssize_t read;
+	pid_t pid;
+	char *argv[2];
 
 	while (1)
 	{
-		line = read_line();
-		if (line == NULL) /* Handle Ctrl+D */
-		{
-			write(1, "\n", 1);
-			break;
-		}
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "#cisfun$ ", 9);
 
-		/* Check for empty or whitespace-only input */
-		only_spaces = 1;
-		for (i = 0; line[i]; i++)
-		{
-			if (line[i] != ' ' && line[i] != '\t')
-			{
-				only_spaces = 0;
-				break;
-			}
-		}
-
-		if (only_spaces)
+		read = getline(&line, &len, stdin);
+		if (read == -1)
 		{
 			free(line);
-			continue;
+			exit(0);
 		}
 
-		execute_command(line);
-		free(line);
-	}
+		line[read - 1] = '\0'; /* remove newline */
 
+		pid = fork();
+		if (pid == 0)
+		{
+			argv[0] = line;
+			argv[1] = NULL;
+
+			if (execve(argv[0], argv, environ) == -1)
+			{
+				perror("./hsh");
+			}
+			exit(1);
+		}
+		else
+		{
+			wait(NULL);
+		}
+	}
+	free(line);
 	return (0);
 }
