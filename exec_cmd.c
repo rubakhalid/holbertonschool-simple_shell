@@ -1,22 +1,23 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 /**
- * execute_command - Executes a single-word command using fork and execve
- * @line: The input command
+ * execute_command - Executes a command with no arguments
+ * @line: Command line input (single word)
  */
 void execute_command(char *line)
 {
 	pid_t pid;
-	char *argv[2];
+	char *argv[] = {line, NULL};
 
 	pid = fork();
 	if (pid == 0)
 	{
-		argv[0] = line;
-		argv[1] = NULL;
-
-		if (execve(argv[0], argv, environ) == -1)
-			perror("./hsh");
+		if (execve(line, argv, environ) == -1)
+			perror("hsh");
 		exit(1);
 	}
 	else if (pid > 0)

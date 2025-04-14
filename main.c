@@ -1,82 +1,42 @@
 #include "main.h"
 #include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 /**
- * is_space - Checks if character is whitespace
- * @c: Character to check
- * Return: 1 if space/tab, 0 otherwise
- */
-int is_space(char c)
-{
-    return (c == ' ' || c == '\t');
-}
-
-/**
- * trim_spaces - Trims leading/trailing spaces
- * @str: String to trim
- * Return: Pointer to trimmed string
- */
-char *trim_spaces(char *str)
-{
-    char *end;
-
-    if (!str) return (NULL);
-
-    while (is_space(*str))
-        str++;
-
-    if (*str == '\0')
-        return (str);
-
-    end = str + strlen(str) - 1;
-    while (end > str && is_space(*end))
-        end--;
-
-    end[1] = '\0';
-
-    return (str);
-}
-
-/**
- * main - Simple shell entry point
- * Return: 0 on success, EXIT_FAILURE on error
+ * main - Entry point of the shell
+ * Return: Always 0
  */
 int main(void)
 {
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
+	char *line = NULL;
 
-    while (1)
-    {
-        if (isatty(STDIN_FILENO))
-            write(STDOUT_FILENO, "($) ", 4);
+	while (1)
+	{
+		line = read_line();
+		if (line == NULL)
+		{
+			write(1, "\n", 1);
+			break;
+		}
 
-        read = getline(&line, &len, stdin);
-        if (read == -1)
-        {
-            if (isatty(STDIN_FILENO))
-                write(STDOUT_FILENO, "\n", 1);
-            free(line);
-            exit(EXIT_SUCCESS);
-        }
+		/* تجاهل السطور الفارغة */
+		int only_spaces = 1;
+		for (int i = 0; line[i]; i++)
+		{
+			if (line[i] != ' ' && line[i] != '\t')
+			{
+				only_spaces = 0;
+				break;
+			}
+		}
+		if (only_spaces)
+		{
+			free(line);
+			continue;
+		}
 
-        if (line[read - 1] == '\n')
-            line[read - 1] = '\0';
+		execute_command(line);
+		free(line);
+	}
 
-        line = trim_spaces(line);
-        if (line == NULL || *line == '\0')
-            continue;
-
-        if (execute_command(line) == -1)
-        {
-            free(line);
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    free(line);
-    return (EXIT_SUCCESS);
+	return (0);
 }
