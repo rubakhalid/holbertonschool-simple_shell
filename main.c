@@ -188,18 +188,39 @@ return (0);
 extern char **environ;
 
 /**
- * find_command_path - search for a command in the PATH
- * @command: the command to look for
- * Return: full path if found, else NULL
+ * _getenv - Get value of environment variable
+ * @name: name of variable
+ * Return: pointer to value or NULL
+ */
+char *_getenv(const char *name)
+{
+int i;
+size_t len = strlen(name);
+
+for (i = 0; environ[i]; i++)
+{
+if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
+return (environ[i] + len + 1);
+}
+return (NULL);
+}
+
+/**
+ * find_command_path - Search for executable in PATH
+ * @command: command name
+ * Return: full path or NULL
  */
 char *find_command_path(char *command)
 {
-char *path_env = getenv("PATH");
-char *path_copy, *token;
+char *path_env, *path_copy, *token;
 char full_path[1024];
 
-if (!path_env || strchr(command, '/'))
+if (strchr(command, '/'))
 return (strdup(command));
+
+path_env = _getenv("PATH");
+if (!path_env)
+return (NULL);
 
 path_copy = strdup(path_env);
 if (!path_copy)
@@ -222,9 +243,9 @@ return (NULL);
 }
 
 /**
- * parse_line - split line into arguments
- * @line: user input
- * Return: array of arguments
+ * parse_line - Split user input into arguments
+ * @line: raw input
+ * Return: NULL-terminated array of arguments
  */
 char **parse_line(char *line)
 {
@@ -249,8 +270,8 @@ return (args);
 }
 
 /**
- * main - Entry point for simple shell 0.3
- * Return: 0 on success
+ * main - Simple shell 0.3
+ * Return: 0
  */
 int main(void)
 {
@@ -296,7 +317,7 @@ if (pid == 0)
 {
 execve(cmd_path, args, environ);
 perror("./hsh");
-exit(1);
+exit(EXIT_FAILURE);
 }
 else if (pid > 0)
 {
@@ -314,3 +335,4 @@ free(args);
 free(line);
 return (0);
 }
+
