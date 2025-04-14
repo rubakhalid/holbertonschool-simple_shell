@@ -1,72 +1,82 @@
 #include "main.h"
 #include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 /**
- * is_space - Checks if a character is a space or tab
- * @c: The character to check
- * Return: 1 if space or tab, 0 otherwise
+ * is_space - Checks if character is whitespace
+ * @c: Character to check
+ * Return: 1 if space/tab, 0 otherwise
  */
 int is_space(char c)
 {
-	return (c == ' ' || c == '\t');
+    return (c == ' ' || c == '\t');
 }
 
 /**
- * trim_spaces - Removes leading and trailing spaces from a string
- * @str: The input string
+ * trim_spaces - Trims leading/trailing spaces
+ * @str: String to trim
  * Return: Pointer to trimmed string
  */
 char *trim_spaces(char *str)
 {
-	char *end;
+    char *end;
 
-	while (is_space(*str))
-		str++;
+    if (!str) return (NULL);
 
-	if (*str == '\0')
-		return (str);
+    while (is_space(*str))
+        str++;
 
-	end = str + strlen(str) - 1;
-	while (end > str && is_space(*end))
-		end--;
+    if (*str == '\0')
+        return (str);
 
-	end[1] = '\0';
+    end = str + strlen(str) - 1;
+    while (end > str && is_space(*end))
+        end--;
 
-	return (str);
+    end[1] = '\0';
+
+    return (str);
 }
 
 /**
- * main - Entry point for simple shell
- * Return: Always 0
+ * main - Simple shell entry point
+ * Return: 0 on success, EXIT_FAILURE on error
  */
 int main(void)
 {
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
 
-	while (1)
-	{
-		if (isatty(STDIN_FILENO))
-			print_prompt();
+    while (1)
+    {
+        if (isatty(STDIN_FILENO))
+            write(STDOUT_FILENO, "($) ", 4);
 
-		read = getline(&line, &len, stdin);
-		if (read == -1)
-		{
-			free(line);
-			exit(0);
-		}
+        read = getline(&line, &len, stdin);
+        if (read == -1)
+        {
+            if (isatty(STDIN_FILENO))
+                write(STDOUT_FILENO, "\n", 1);
+            free(line);
+            exit(EXIT_SUCCESS);
+        }
 
-		if (line[read - 1] == '\n')
-			line[read - 1] = '\0';
+        if (line[read - 1] == '\n')
+            line[read - 1] = '\0';
 
-		line = trim_spaces(line);
-		if (*line == '\0')
-			continue;
+        line = trim_spaces(line);
+        if (line == NULL || *line == '\0')
+            continue;
 
-		execute_command(line);
-	}
+        if (execute_command(line) == -1)
+        {
+            free(line);
+            exit(EXIT_FAILURE);
+        }
+    }
 
-	free(line);
-	return (0);
+    free(line);
+    return (EXIT_SUCCESS);
 }
