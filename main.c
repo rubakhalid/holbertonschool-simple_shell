@@ -1,8 +1,7 @@
 #include "main.h"
 
 /**
- * main - A simple shell that executes commands
- *
+ * main - Entry point for simple shell that executes single-word commands
  * Return: Always 0 (Success)
  */
 int main(void)
@@ -22,10 +21,14 @@ int main(void)
 		if (read == -1)
 		{
 			free(line);
-			exit(0);
+			exit(0); /* Handle Ctrl+D */
 		}
 
-		line[read - 1] = '\0'; /* remove newline */
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0'; /* Remove newline */
+
+		while (*line == ' ')
+			line++;
 
 		pid = fork();
 		if (pid == 0)
@@ -34,16 +37,19 @@ int main(void)
 			argv[1] = NULL;
 
 			if (execve(argv[0], argv, environ) == -1)
-			{
 				perror("./hsh");
-			}
 			exit(1);
 		}
-		else
+		else if (pid > 0)
 		{
 			wait(NULL);
 		}
+		else
+		{
+			perror("fork");
+		}
 	}
+
 	free(line);
 	return (0);
 }
