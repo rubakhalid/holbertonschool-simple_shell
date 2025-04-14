@@ -12,5 +12,6 @@ extern char **environ;
 void print_prompt(void);
 void execute_command(char *line);
 char *trim_spaces(char *str);
+int is_space(char c);
 
 #endif /* MAIN_H */
