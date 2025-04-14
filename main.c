@@ -303,6 +303,13 @@ free(args);
 continue;
 }
 
+if (strcmp(args[0], "exit") == 0)
+{
+free(args);
+free(line);
+exit(0);
+}
+
 cmd_path = find_command_path(args[0]);
 if (!cmd_path || access(cmd_path, X_OK) != 0)
 {
