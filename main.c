@@ -328,6 +328,19 @@ free(line);
 exit(0);
 }
 
+/*  Built-in env command */
+if (strcmp(args[0], "env") == 0)
+{
+	int i = 0;
+	while (environ[i])
+	{
+		printf("%s\n", environ[i]);
+		i++;
+	}
+	free(args);
+	continue; 
+}
+ 
 cmd_path = find_command_path(args[0]);
 if (!cmd_path || access(cmd_path, X_OK) != 0)
 {
