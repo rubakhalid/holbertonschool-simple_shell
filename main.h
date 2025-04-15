@@ -6,15 +6,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <stddef.h>
+#include <string.h>
 
 extern char **environ;
 
+void execute_command(char *line);
 char *read_line(void);
-void execute_command(char *line);
-void print_prompt(void);
-void execute_command(char *line);
-char *trim_spaces(char *str);
-int is_space(char c);
+void print_env(void);
 
-#endif /* MAIN_H */
+#endif
