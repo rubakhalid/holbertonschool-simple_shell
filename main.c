@@ -149,7 +149,7 @@ int main(void)
 		{
 			free(args);
 			free(line);
-			exit(0);
+			exit(WEXITSTATUS(status));
 		}
 
 		/* Built-in: env */
