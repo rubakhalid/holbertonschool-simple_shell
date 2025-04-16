@@ -11,11 +11,6 @@
 
 extern char **environ;
 
-/**
- * _getenv - Get value of environment variable
- * @name: name of variable
- * Return: pointer to value or NULL
- */
 char *_getenv(const char *name)
 {
 	int i;
@@ -29,11 +24,6 @@ char *_getenv(const char *name)
 	return (NULL);
 }
 
-/**
- * find_command_path - Search for executable in PATH
- * @command: command name
- * Return: full path or NULL
- */
 char *find_command_path(char *command)
 {
 	char *path_env, *path_copy, *token;
@@ -66,11 +56,6 @@ char *find_command_path(char *command)
 	return (NULL);
 }
 
-/**
- * parse_line - Split user input into arguments
- * @line: raw input
- * Return: NULL-terminated array of arguments
- */
 char **parse_line(char *line)
 {
 	char **args = malloc(MAX_ARGS * sizeof(char *));
@@ -93,11 +78,6 @@ char **parse_line(char *line)
 	return (args);
 }
 
-/**
- * is_only_whitespace - Check if string is only spaces, tabs, or newlines
- * @s: input string
- * Return: 1 if only whitespace, 0 otherwise
- */
 int is_only_whitespace(const char *s)
 {
 	while (*s)
@@ -109,10 +89,6 @@ int is_only_whitespace(const char *s)
 	return (1);
 }
 
-/**
- * main - Simple shell 0.4
- * Return: Exit status of last executed command
- */
 int main(void)
 {
 	char *line = NULL, *cmd_path;
@@ -144,7 +120,6 @@ int main(void)
 			continue;
 		}
 
-		/*  Built-in: exit */
 		if (strcmp(args[0], "exit") == 0)
 		{
 			free(args);
@@ -152,7 +127,6 @@ int main(void)
 			exit(WEXITSTATUS(status));
 		}
 
-		/* Built-in: env */
 		if (strcmp(args[0], "env") == 0)
 		{
 			int i = 0;
@@ -166,12 +140,10 @@ int main(void)
 		}
 
 		cmd_path = find_command_path(args[0]);
-		if (!cmd_path || access(cmd_path, X_OK) != 0)
+		if (!cmd_path)
 		{
-			fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+			fprintf(stderr, "%s: command not found\n", args[0]);
 			free(args);
-			if (cmd_path)
-				free(cmd_path);
 			status = 127;
 			continue;
 		}
@@ -180,7 +152,7 @@ int main(void)
 		if (pid == 0)
 		{
 			execve(cmd_path, args, environ);
-			perror("./hsh");
+			perror("execve");
 			exit(127);
 		}
 		else if (pid > 0)
@@ -197,5 +169,5 @@ int main(void)
 	}
 
 	free(line);
-	return (WEXITSTATUS(status)); /* Exit status of last command */
+	return (WEXITSTATUS(status));
 }
