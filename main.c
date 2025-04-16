@@ -33,7 +33,7 @@ char *find_command_path(char *command)
 		return (strdup(command));
 
 	path_env = _getenv("PATH");
-	if (!path_env)
+	if (!path_env || path_env[0] == '\0')
 		return (NULL);
 
 	path_copy = strdup(path_env);
