@@ -130,7 +130,7 @@ int main(void)
 		if (strcmp(args[0], "env") == 0)
 		{
 			int i = 0;
-			while (environ[i])
+			while (environ && environ[i])
 			{
 				printf("%s\n", environ[i]);
 				i++;
