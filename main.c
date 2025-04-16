@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #define PROMPT "#cisfun$ "
 #define MAX_ARGS 64
@@ -28,9 +29,14 @@ char *find_command_path(char *command)
 {
 	char *path_env, *path_copy, *token;
 	char full_path[1024];
+	struct stat st;
 
 	if (strchr(command, '/'))
-		return (strdup(command));
+{ 
+if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+			return strdup(command);
+		return NULL;
+	}
 
 	path_env = _getenv("PATH");
 	if (!path_env || path_env[0] == '\0')
@@ -44,7 +50,7 @@ char *find_command_path(char *command)
 	while (token)
 	{
 		snprintf(full_path, sizeof(full_path), "%s/%s", token, command);
-		if (access(full_path, X_OK) == 0)
+if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
 			return (strdup(full_path));
