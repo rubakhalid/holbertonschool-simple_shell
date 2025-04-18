@@ -148,7 +148,7 @@ int main(void)
 		cmd_path = find_command_path(args[0]);
 		if (!cmd_path)
 		{
-			fprintf(stderr, "%s: command not found\n", args[0]);
+			fprintf(stderr, "./hsh: 1: %s: command not found\n", args[0]);
 			free(args);
 			status = 127;
 			continue;
