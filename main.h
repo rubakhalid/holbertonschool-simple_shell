@@ -13,8 +13,9 @@ extern char **environ;
 
 /* ==== FUNCTION PROTOTYPES ==== */
 
-/* main logic */
+/* Shell logic */
 void execute_cmd(char **args, int *status);
+int handle_builtin(char **args, char *line);
 
 /* parsing */
 void parse_line(char *line, char **argv);

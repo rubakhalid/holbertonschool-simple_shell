@@ -1,9 +1,28 @@
 #include "main.h"
 
 /**
- * find_command_path - Find full path of a command in PATH
- * @command: command name
- * Return: full path if found, NULL otherwise
+ * _getenv - Gets the value of an environment variable
+ * @name: The name of the environment variable
+ * Return: Pointer to the value, or NULL if not found
+ */
+char *_getenv(const char *name)
+{
+	int i;
+	size_t len = strlen(name);
+
+	for (i = 0; environ[i]; i++)
+	{
+		if (strncmp(environ[i], name, len) == 0 &&
+		    environ[i][len] == '=')
+			return (environ[i] + len + 1);
+	}
+	return (NULL);
+}
+
+/**
+ * find_command_path - Searches PATH to find the full path of a command
+ * @command: The command name to find
+ * Return: Full path if found, otherwise NULL
  */
 char *find_command_path(char *command)
 {
@@ -19,7 +38,7 @@ char *find_command_path(char *command)
 	}
 
 	path_env = _getenv("PATH");
-	if (!path_env || path_env[0] == '\0')
+	if (!path_env)
 		return (NULL);
 
 	path_copy = strdup(path_env);
@@ -37,6 +56,7 @@ char *find_command_path(char *command)
 		}
 		token = strtok(NULL, ":");
 	}
+
 	free(path_copy);
 	return (NULL);
 }
