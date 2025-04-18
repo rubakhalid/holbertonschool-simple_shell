@@ -1,47 +1,24 @@
 #include "main.h"
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
- * execute_command - Executes a command entered by the user
- * @cmd_path: path to the command (can be full or relative)
- * @args: unused
- * @line: full command line input
+ * execute_command - Executes a command using execve
+ * @cmd_path: path to the command
+ * @args: arguments to pass to execve
+ * @line: original user input
  */
 void execute_command(char *cmd_path, char **args, char *line)
 {
-	pid_t pid;
-	char *argv[64];
+	(void)line;
 
-	parse_line(line, argv);
-
-	if (argv[0] == NULL)
-		return;
-
-	pid = fork();
-	if (pid == -1)
+	if (access(cmd_path, X_OK) == 0)
 	{
-		perror("fork");
-		return;
-	}
-
-	if (pid == 0)
-	{
-		if (access(argv[0], X_OK) == 0)
-		{
-			execve(argv[0], argv, environ);
-			perror("execve");
-			exit(1);
-		}
-		else
-		{
-			dprintf(STDERR_FILENO, "./hsh: 1: %s: not found\n", argv[0]);
-			exit(127);
-		}
+		execve(cmd_path, args, environ);
+		perror("execve");
+		exit(1);
 	}
 	else
 	{
-		wait(NULL);
+		dprintf(STDERR_FILENO, "./hsh: 1: %s: not found\n", args[0]);
+		exit(127);
 	}
 }
