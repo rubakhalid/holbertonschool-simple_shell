@@ -1,17 +1,13 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
 
 #define PROMPT "#cisfun$ "
 #define MAX_ARGS 64
 
-extern char **environ;
-
+/**
+ * _getenv - Get the value of an environment variable
+ * @name: variable name
+ * Return: pointer to value, or NULL
+ */
 char *_getenv(const char *name)
 {
 	int i;
@@ -25,6 +21,11 @@ char *_getenv(const char *name)
 	return (NULL);
 }
 
+/**
+ * find_command_path - Find full path of a command in PATH
+ * @command: command name
+ * Return: full path if found, NULL otherwise
+ */
 char *find_command_path(char *command)
 {
 	char *path_env, *path_copy, *token;
@@ -32,10 +33,10 @@ char *find_command_path(char *command)
 	struct stat st;
 
 	if (strchr(command, '/'))
-{ 
-if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
-			return strdup(command);
-		return NULL;
+	{
+		if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+			return (strdup(command));
+		return (NULL);
 	}
 
 	path_env = _getenv("PATH");
@@ -50,40 +51,22 @@ if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
 	while (token)
 	{
 		snprintf(full_path, sizeof(full_path), "%s/%s", token, command);
-if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
+		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
 			return (strdup(full_path));
 		}
 		token = strtok(NULL, ":");
 	}
-
 	free(path_copy);
 	return (NULL);
 }
 
-char **parse_line(char *line)
-{
-	char **args = malloc(MAX_ARGS * sizeof(char *));
-	char *token;
-	int i = 0;
-
-	if (!args)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-
-	token = strtok(line, " \t\n");
-	while (token && i < MAX_ARGS - 1)
-	{
-		args[i++] = token;
-		token = strtok(NULL, " \t\n");
-	}
-	args[i] = NULL;
-	return (args);
-}
-
+/**
+ * is_only_whitespace - Check if a string has only whitespace
+ * @s: input string
+ * Return: 1 if only whitespace, 0 otherwise
+ */
 int is_only_whitespace(const char *s)
 {
 	while (*s)
@@ -95,12 +78,16 @@ int is_only_whitespace(const char *s)
 	return (1);
 }
 
+/**
+ * main - Simple shell loop
+ * Return: exit status
+ */
 int main(void)
 {
 	char *line = NULL, *cmd_path;
 	size_t len = 0;
 	ssize_t read;
-	char **args;
+	char *args[MAX_ARGS];
 	pid_t pid;
 	int status = 0;
 
@@ -119,16 +106,12 @@ int main(void)
 		if (is_only_whitespace(line))
 			continue;
 
-		args = parse_line(line);
+		parse_line(line, args);
 		if (!args[0])
-		{
-			free(args);
 			continue;
-		}
 
 		if (strcmp(args[0], "exit") == 0)
 		{
-			free(args);
 			free(line);
 			exit(WEXITSTATUS(status));
 		}
@@ -136,44 +119,33 @@ int main(void)
 		if (strcmp(args[0], "env") == 0)
 		{
 			int i = 0;
+
 			while (environ && environ[i])
 			{
 				printf("%s\n", environ[i]);
 				i++;
 			}
-			free(args);
 			continue;
 		}
 
 		cmd_path = find_command_path(args[0]);
 		if (!cmd_path)
 		{
-			fprintf(stderr, "./hsh: 1: %s: command not found\n", args[0]);
-			free(args);
+			dprintf(STDERR_FILENO, "./hsh: 1: %s: not found\n", args[0]);
 			status = 127;
 			continue;
 		}
 
 		pid = fork();
 		if (pid == 0)
-		{
-			execve(cmd_path, args, environ);
-			perror("execve");
-			exit(127);
-		}
+			execute_command(cmd_path, args, line);
 		else if (pid > 0)
-		{
 			wait(&status);
-		}
 		else
-		{
 			perror("fork");
-		}
 
 		free(cmd_path);
-		free(args);
 	}
-
 	free(line);
 	return (WEXITSTATUS(status));
 }
