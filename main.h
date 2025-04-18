@@ -8,17 +8,20 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 
 extern char **environ;
 
-/* Function Prototypes */
+/* ==== FUNCTION PROTOTYPES ==== */
+
+/* main logic */
+void execute_cmd(char **args, int *status);
+
+/* parsing */
+void parse_line(char *line, char **argv);
+int is_only_whitespace(const char *s);
+
+/* env and path */
 char *_getenv(const char *name);
 char *find_command_path(char *command);
-int is_only_whitespace(const char *s);
-void parse_line(char *line, char **argv);
-int handle_builtin(char **args, int *status, char *line);
-void run_command(char **args, char *line, int *status);
-void execute_command(char *cmd_path, char **args, char *line);
 
 #endif /* MAIN_H */
