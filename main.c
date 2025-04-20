@@ -1,5 +1,7 @@
 #include "shell.h"
 
+int last_status = 0;  /*global status variable */
+
 /**
 * print_prompt - Prints the prompt
 */
@@ -32,6 +34,8 @@ int status = 0;
 
 if (args[1])
 status = atoi(args[1]);
+else
+status = last_status;
 
 free(line);
 free(args);
@@ -58,7 +62,7 @@ read = read_line(&line, &len);
 if (read == -1)  /* EOF case (Ctrl+D) */
 {
 free(line);
-exit(status);  /* Exit with the last recorded case */
+exit(last_status);  /* Exit with the last recorded case */
 }
 
 args = parse_line(line);
@@ -71,6 +75,7 @@ handle_exit(args, line);
 else
 {
 status = execute_cmd(args);/* Save the exit status of the command execution */
+last_status = status;
 }
 }
 
@@ -80,5 +85,5 @@ line = NULL; /* Reset variable */
 len = 0; /* Reset buffer lemgth */
 }
 
-return (status);
+return (last_status);
 }
