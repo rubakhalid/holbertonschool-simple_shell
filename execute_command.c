@@ -32,6 +32,9 @@ void execute_command(char **args)
 	{
 		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 		last_exit_status = 127;
+		/* Exit immediately if not interactive (like in tests) */
+		if (!isatty(STDIN_FILENO))
+			exit(127);
 		return;
 	}
 
