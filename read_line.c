@@ -19,5 +19,9 @@ char *read_line(void)
 		exit(0);  /* Ctrl+D exits */
 	}
 
+	/* Remove newline character if present */
+	if (line[nread - 1] == '\n')
+		line[nread - 1] = '\0';
+	
 	return (line);
 }

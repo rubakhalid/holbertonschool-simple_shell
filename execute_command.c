@@ -27,7 +27,7 @@ void execute_command(char **args)
 	if (!cmd_path)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
-		return;
+		exit(127);
 	}
 
 	pid = fork();

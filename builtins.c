@@ -19,12 +19,14 @@ int is_builtin(char **args)
  */
 void handle_builtin(char **args)
 {
+	int i;
+
 	if (strcmp(args[0], "exit") == 0)
 		exit(0);
 
 	if (strcmp(args[0], "env") == 0)
 	{
-		for (int i = 0; environ[i]; i++)
+		for (i = 0; environ[i]; i++)
 			printf("%s\n", environ[i]);
 	}
 }
