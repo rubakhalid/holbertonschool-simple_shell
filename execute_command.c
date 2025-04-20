@@ -54,8 +54,9 @@ void execute_command(char **args)
 	else
 	{
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			exit(WEXITSTATUS(status));
+if (WIFEXITED(status))
+	last_exit_status = WEXITSTATUS(status);
+
 	}
 
 	free(cmd_path);

@@ -11,6 +11,7 @@
 #define BUFFER_SIZE 1024
 
 extern char **environ;
+extern int last_exit_status;
 
 /* Core shell functions */
 char *read_line(void);

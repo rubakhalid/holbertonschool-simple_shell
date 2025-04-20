@@ -24,7 +24,8 @@ int handle_builtin(char **args)
 	int i;
 
 	if (strcmp(args[0], "exit") == 0)
-		return (-1);
+exit(last_exit_status);
+
 
 	if (strcmp(args[0], "env") == 0)
 	{

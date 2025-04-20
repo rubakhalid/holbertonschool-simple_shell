@@ -5,6 +5,9 @@
  *
  * Return: Always 0.
  */
+
+int last_exit_status = 0;
+
 int main(void)
 {
 	char *input;
