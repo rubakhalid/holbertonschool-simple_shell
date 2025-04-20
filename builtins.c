@@ -1,26 +1,30 @@
-#include "main.h"
+#include "shell.h"
 
 /**
- * handle_builtin - Handles built-in commands like exit and env
- * @args: command arguments
- * @status: pointer to the last exit status
- * @line: input line (for freeing memory)
- * Return: 1 if built-in handled, 0 otherwise
+ * is_builtin - Checks if the command is a built-in.
+ * @args: Command and its arguments.
+ *
+ * Return: 1 if it's a built-in, 0 otherwise.
  */
-int handle_builtin(char **args, int *status, char *line)
+int is_builtin(char **args)
 {
-	int i;
-
-	if (strcmp(args[0], "exit") == 0)
-	{
-		free(line);
-		exit(WEXITSTATUS(*status));
-	}
-	else if (strcmp(args[0], "env") == 0)
-	{
-		for (i = 0; environ && environ[i]; i++)
-			printf("%s\n", environ[i]);
+	if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "env") == 0)
 		return (1);
-	}
 	return (0);
+}
+
+/**
+ * handle_builtin - Executes built-in commands.
+ * @args: Command and its arguments.
+ */
+void handle_builtin(char **args)
+{
+	if (strcmp(args[0], "exit") == 0)
+		exit(0);
+
+	if (strcmp(args[0], "env") == 0)
+	{
+		for (int i = 0; environ[i]; i++)
+			printf("%s\n", environ[i]);
+	}
 }
