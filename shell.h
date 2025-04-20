@@ -18,6 +18,8 @@ char **tokenize_input(char *input);
 void execute_command(char **args);
 char *find_command_path(char *cmd);
 void print_prompt(void);
+int _strncmp(const char *s1, const char *s2, size_t n);
+char *get_path_from_environ(void);
 
 /* Built-in commands */
 int is_builtin(char **args);
