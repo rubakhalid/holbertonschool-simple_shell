@@ -1,75 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include "shell.h"
 
 /**
- * _strncmp - Compares two strings up to n bytes.
- * @s1: First string.
- * @s2: Second string.
- * @n: Number of bytes to compare.
+ * find_command - finds the path of a given command
+ * @command: the command to search for
  *
- * Return: 0 if equal, non-zero otherwise.
+ * Return: the full path to the command, or NULL if not found
  */
-int _strncmp(const char *s1, const char *s2, size_t n)
+char *find_command(char *command)
 {
-	size_t i;
+char *path_env = NULL;
+char *path_copy, *dir;
+char full_path[1024];
+int i = 0;
 
-	for (i = 0; i < n; i++)
+/* search PATH manually inside environ */
+
+while (environ[i])
+{
+if (strncmp(environ[i], "PATH=", 5) == 0)
+{
+path_env = environ[i] + 5;
+break;
+}
+i++;
+}
+
+if (!path_env)
+return (NULL);
+
+path_copy = strdup(path_env);
+dir = strtok(path_copy, ":");
+
+while (dir)
+{
+sprintf(full_path, "%s/%s", dir, command);
+if (access(full_path, X_OK) == 0)
+{
+free(path_copy);
+return (strdup(full_path));
+}
+dir = strtok(NULL, ":");
+}
+
+free(path_copy);
+return (NULL);
+}
+
+
+
+
+/**
+ * has_path_env - Checks if the PATH variable is present in the environment
+ *
+ * Return: 1 if PATH is found, 0 otherwise
+ */
+
+int has_path_env(void)
+{
+	int i = 0;
+
+	while (environ[i])
 	{
-		if (s1[i] != s2[i])
-			return (s1[i] - s2[i]);
-		if (s1[i] == '\0')
-			break;
+		if (strncmp(environ[i], "PATH=", 5) == 0)
+			return (1);
+		i++;
 	}
 	return (0);
-}
-
-/**
- * get_path_from_environ - Retrieves the PATH value from environ.
- *
- * Return: Pointer to the PATH string or NULL if not found.
- */
-char *get_path_from_environ(void)
-{
-	int i;
-
-	for (i = 0; environ[i]; i++)
-	{
-		if (_strncmp(environ[i], "PATH=", 5) == 0)
-			return (environ[i] + 5);
-	}
-	return (NULL);
-}
-
-/**
- * find_command_path - Searches for a command in the system PATH.
- * @cmd: The command to find.
- *
- * Return: Full path to the command, or NULL if not found.
- */
-char *find_command_path(char *cmd)
-{
-	char *path = get_path_from_environ();
-	char *path_copy, *dir;
-	char full_path[BUFFER_SIZE];
-
-	if (!path)
-		return (NULL);
-
-	path_copy = strdup(path);
-	if (!path_copy)
-		return (NULL);
-
-	dir = strtok(path_copy, ":");
-	while (dir != NULL)
-	{
-		snprintf(full_path, sizeof(full_path), "%s/%s", dir, cmd);
-		if (access(full_path, X_OK) == 0)
-		{
-			free(path_copy);
-			return (strdup(full_path));
-		}
-		dir = strtok(NULL, ":");
-	}
-
-	free(path_copy);
-	return (NULL);
 }
