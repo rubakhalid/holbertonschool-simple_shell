@@ -23,6 +23,7 @@ char *get_path_from_environ(void);
 
 /* Built-in commands */
 int is_builtin(char **args);
-void handle_builtin(char **args);
+int handle_builtin(char **args);
+
 
 #endif

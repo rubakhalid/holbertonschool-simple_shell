@@ -16,17 +16,23 @@ int is_builtin(char **args)
 /**
  * handle_builtin - Executes built-in commands.
  * @args: Command and its arguments.
+ *
+ * Return: -1 if exit command, 0 if success, 1 if not a builtin.
  */
-void handle_builtin(char **args)
+int handle_builtin(char **args)
 {
 	int i;
 
 	if (strcmp(args[0], "exit") == 0)
-		exit(0);
+		return (-1);
 
 	if (strcmp(args[0], "env") == 0)
 	{
 		for (i = 0; environ[i]; i++)
 			printf("%s\n", environ[i]);
+		return (0);
 	}
+
+	return (1);
 }
+
