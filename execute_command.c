@@ -26,17 +26,13 @@ void execute_command(char **args)
 	if (args[0] == NULL)
 		return;
 
-	if (is_builtin(args))
-	{
-		handle_builtin(args);
-		return;
-	}
-
 	cmd_path = resolve_command_path(args[0]);
+
 	if (!cmd_path)
 	{
-	fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
-		exit(127);
+		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+		last_exit_status = 127;
+		return;
 	}
 
 	pid = fork();
@@ -50,13 +46,13 @@ void execute_command(char **args)
 	else if (pid < 0)
 	{
 		perror("fork");
+		last_exit_status = 1;
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
-if (WIFEXITED(status))
-	last_exit_status = WEXITSTATUS(status);
-
+		if (WIFEXITED(status))
+			last_exit_status = WEXITSTATUS(status);
 	}
 
 	free(cmd_path);

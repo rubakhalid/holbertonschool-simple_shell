@@ -13,19 +13,19 @@ int is_builtin(char **args)
 	return (0);
 }
 
+
 /**
  * handle_builtin - Executes built-in commands.
  * @args: Command and its arguments.
  *
- * Return: -1 if exit command, 0 if success, 1 if not a builtin.
+ * Return: -1 if exit, 0 if handled, 1 if not a builtin.
  */
 int handle_builtin(char **args)
 {
 	int i;
 
 	if (strcmp(args[0], "exit") == 0)
-exit(last_exit_status);
-
+		return (-1);
 
 	if (strcmp(args[0], "env") == 0)
 	{
@@ -36,4 +36,3 @@ exit(last_exit_status);
 
 	return (1);
 }
-
