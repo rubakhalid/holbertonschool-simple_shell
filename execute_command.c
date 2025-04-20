@@ -28,7 +28,8 @@ void execute_command(char **args)
 
 	cmd_path = resolve_command_path(args[0]);
 
-	if (!cmd_path)
+	if (!cmd_path || cmd_path[0] == '\0')
+
 	{
 		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 		last_exit_status = 127;
