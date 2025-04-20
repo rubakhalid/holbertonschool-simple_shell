@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * read_line - Reads a line of input from the user.
+ * read_line - Reads a line of input from the user and removes newline.
  *
  * Return: Pointer to the input string.
  */
@@ -22,6 +22,6 @@ char *read_line(void)
 	/* Remove newline character if present */
 	if (line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
-	
+
 	return (line);
 }

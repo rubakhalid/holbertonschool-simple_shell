@@ -9,10 +9,13 @@ int main(void)
 {
 	char *input;
 	char **args;
+	int interactive = isatty(STDIN_FILENO);
 
 	while (1)
 	{
-		print_prompt();
+		if (interactive)
+			print_prompt();
+
 		input = read_line();
 		args = tokenize_input(input);
 		execute_command(args);
@@ -20,5 +23,6 @@ int main(void)
 		free(input);
 		free(args);
 	}
+
 	return (0);
 }

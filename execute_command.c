@@ -1,6 +1,19 @@
 #include "shell.h"
 
 /**
+ * resolve_command_path - Gets the full path of the command.
+ * @cmd: Command name.
+ *
+ * Return: Full path if found, NULL otherwise.
+ */
+char *resolve_command_path(char *cmd)
+{
+	if (access(cmd, X_OK) == 0)
+		return (strdup(cmd));
+	return (find_command_path(cmd));
+}
+
+/**
  * execute_command - Forks and executes a command.
  * @args: Null-terminated array of strings (command + arguments).
  */
@@ -19,11 +32,7 @@ void execute_command(char **args)
 		return;
 	}
 
-	if (access(args[0], X_OK) == 0)
-		cmd_path = strdup(args[0]);
-	else
-		cmd_path = find_command_path(args[0]);
-
+	cmd_path = resolve_command_path(args[0]);
 	if (!cmd_path)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
@@ -35,6 +44,7 @@ void execute_command(char **args)
 	{
 		execve(cmd_path, args, environ);
 		perror("execve");
+		free(cmd_path);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)

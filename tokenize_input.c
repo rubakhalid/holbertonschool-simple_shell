@@ -36,5 +36,5 @@ char **tokenize_input(char *input)
 		token = strtok(NULL, " \t\r\n");
 	}
 	tokens[position] = NULL;
-	return tokens;
+	return (tokens);
 }
