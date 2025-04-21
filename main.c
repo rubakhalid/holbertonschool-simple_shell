@@ -1,9 +1,10 @@
 #include "shell.h"
 
-int last_status = 0;  /*global status variable */
+int last_status = 0;  /* global status variable */
 
 /**
 * print_prompt - Prints the prompt
+*
 */
 void print_prompt(void)
 {
