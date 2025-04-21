@@ -57,6 +57,7 @@ return (NULL);
  * has_path_env - Checks if the PATH variable is present in the environment
  *
  * Return: 1 if PATH is found, 0 otherwise
+ *
  */
 
 int has_path_env(void)
