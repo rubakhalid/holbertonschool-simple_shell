@@ -3,7 +3,6 @@
 /**
  * parse_line - splits a line into tokens (arguments)
  * @line: the input line
- *
  * Return: array of strings (tokens)
  */
 char **parse_line(char *line)
