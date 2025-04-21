@@ -8,15 +8,12 @@
 #include <sys/wait.h>
 
 int has_path_env(void);
-
 char **parse_line(char *line);
-
 int execute_cmd(char **args);
+char *find_command(char *command);
+void handle_cd(char **args);
 
 extern char **environ;
-
-char *find_command(char *command);
-
 extern int last_status;
 
-#endif
+#endif /* SHELL_H */
