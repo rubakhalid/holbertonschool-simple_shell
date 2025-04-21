@@ -1,16 +1,18 @@
 #include "shell.h"
 
 /**
- * parse_line - splits a line into tokens (arguments)
- * @line: the input line
- * Return: array of strings (tokens)
+ * parse_line - Tokenizes the input line into arguments
+ * @line: The input line from user
+ *
+ * Return: NULL-terminated array of tokens (arguments)
  */
 char **parse_line(char *line)
 {
 	int bufsize = 64, i = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
+	char **tokens;
 	char *token;
 
+	tokens = malloc(bufsize * sizeof(char *));
 	if (!tokens)
 	{
 		perror("malloc");
@@ -20,7 +22,9 @@ char **parse_line(char *line)
 	token = strtok(line, " \n\t");
 	while (token)
 	{
-		tokens[i++] = token;
+		tokens[i] = token;
+		i++;
+
 		if (i >= bufsize)
 		{
 			bufsize += 64;
@@ -31,9 +35,10 @@ char **parse_line(char *line)
 				exit(EXIT_FAILURE);
 			}
 		}
+
 		token = strtok(NULL, " \n\t");
 	}
-	tokens[i] = NULL;
 
+	tokens[i] = NULL;
 	return (tokens);
 }
