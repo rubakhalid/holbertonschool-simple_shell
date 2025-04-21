@@ -57,9 +57,9 @@ $ cat script.sh | ./hsh
 The shell exits with the status of the last executed command.
 
 .SH AUTHOR
-Written by the Simple Shell project team. See
-.B AUTHORS
-file for full list of contributors.
+This project was developed by:
+- Batoul Alsaeed
+- Ruba Alhuamid
 
 .SH FILES
 .TP
