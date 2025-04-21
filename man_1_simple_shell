@@ -1,37 +1,82 @@
-.TH simple_shell 1 "April 2025" "Simple Shell Manual"
+.TH SIMPLE_SHELL 1 "April 2025" "v1.0" "User Commands"
+
 .SH NAME
-simple_shell \- a simple UNIX command line interpreter
+simple_shell \- a basic UNIX command-line interpreter written in C
 
 .SH SYNOPSIS
 .B ./hsh
+.RI [ command ]
+.br
+.B echo "command" | ./hsh
 
 .SH DESCRIPTION
+The
 .B simple_shell
-is a basic shell written in C as part of the Holberton School curriculum.  
-It supports interactive and non-interactive modes, and allows users to run basic UNIX commands using full paths.
+program is a minimal implementation of a command-line shell, capable of executing commands in both interactive and non-interactive modes.
 
-This version supports only single-word commands with no arguments.  
-It does not handle pipes, redirections, or environment path search.
+It provides the following features:
+.IP \(bu 3
+Custom shell prompt
+.IP \(bu 3
+Command execution using
+.B execve
+.IP \(bu 3
+Support for command arguments
+.IP \(bu 3
+Searches for executable files using the
+.B PATH
+environment variable
+.IP \(bu 3
+Built-in commands:
+.B exit
+and
+.B env
+.IP \(bu 3
+Graceful handling of
+.B EOF
+signals (Ctrl+D)
 
 .SH USAGE
-To start the shell, compile the source code and run:
+.TP
+Interactive Mode:
+.RS
+.nf
+$ ./hsh
+$ ls
+$ /bin/ls -l
+$ env
+$ exit
+.fi
+.RE
 
-.B ./hsh
+.TP
+Non-Interactive Mode:
+.RS
+.nf
+$ echo "/bin/ls" | ./hsh
+.fi
+.RE
 
-Once inside the shell, type a full path to a command and press ENTER:
-
-.EX
-#cisfun$ /bin/ls
-
-To exit, use Ctrl+D (EOF).
-
-To run in non-interactive mode:
-
-.B echo "/bin/ls" | ./hsh
+.SH FILES
+The following files are part of this shell:
+.IP main.c
+Entry point and shell loop
+.IP execute_command.c
+Handles forking and execution of commands
+.IP find_command_path.c
+Resolves full command paths using PATH
+.IP parse_line.c
+Parses user input into commands and arguments
+.IP shell.h
+Header file with function prototypes and constants
 
 .SH AUTHORS
-Batoul Alsaeed (GitHub: @Batoul-Alsaeed)  
-Ruba Alhuamid (GitHub: @rubakhalid)
+See the AUTHORS file for a list of contributors.
 
 .SH SEE ALSO
-sh(1), execve(2), fork(2), getline(3), wait(2)
+.BR sh (1),
+.BR bash (1),
+.BR execve (2)
+
+.SH BUGS
+No known bugs at this time.
