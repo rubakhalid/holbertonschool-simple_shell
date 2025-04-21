@@ -30,19 +30,19 @@ Features:
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 
-Usage Examples
-# Interactive Mode
+## Usage Examples
+## Interactive Mode
 $ ./hsh
 $ ls
 $ /bin/ls -l
 $ env
 $ exit
 
-# Non-Interactive Mode
+## Non-Interactive Mode
 $ echo "/bin/ls" | ./hsh
 
-# Manual Page
+## Manual Page
 $ man ./man_1_simple_shell
 
-# Authors
+## Authors
 See the AUTHORS file for contributor names.
