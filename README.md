@@ -29,26 +29,20 @@ Features:
 
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
-Usage Examples
-Interactive Mode:
 
-bash
-نسخ الكود
+Usage Examples
+# Interactive Mode
 $ ./hsh
 $ ls
 $ /bin/ls -l
 $ env
 $ exit
-Non-Interactive Mode:
 
-bash
-نسخ الكود
+# Non-Interactive Mode
 $ echo "/bin/ls" | ./hsh
-Manual Page
-bash
-نسخ الكود
-man ./man_1_simple_shell
-Authors
-bash
-نسخ الكود
+
+# Manual Page
+$ man ./man_1_simple_shell
+
+# Authors
 See the AUTHORS file for contributor names.
